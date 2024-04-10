@@ -1,9 +1,9 @@
-name: CICD-Prod
+name: CICD
 
 on:
-  pull_request:
+  push:
     branches:
-    - main
+      - dev
 
 jobs:
   build-and-deploy:
@@ -31,9 +31,9 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-          REPOSITORY: adex-todo-prod
+          REPOSITORY: adex-todo
         run: |
-          docker build -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./application/DockerfileProd .
+          docker build -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./application/Dockerfile .
           docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT    
 
@@ -41,14 +41,14 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ./application/prod-task-revision1.json
-          container-name: todo-prod
+          task-definition: ./application/dev-task-revision3.json
+          container-name: todo
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: adex-service-prod
+          service: adex-service-dev
           cluster: adex-task
           wait-for-service-stability: true    
