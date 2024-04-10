@@ -41,7 +41,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: prod-task-revision1.json
+          task-definition: ./application/prod-task-revision1.json
           container-name: todo-prod
           image: ${{ steps.build-image.outputs.image }}
 
