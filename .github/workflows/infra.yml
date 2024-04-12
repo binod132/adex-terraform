@@ -1,0 +1,14 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - infra
+    
+jobs:
+  build-and-deploy:
+    runs-on: [ ubuntu-latest ]
+    steps:
+
+      - name: Checkout source
+        uses: actions/checkout@v3
