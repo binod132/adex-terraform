@@ -14,15 +14,21 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      S3_BUCKET_NAME: ${{ if eq(github.ref, 'refs/heads/infra') }}terraformstate132${{ else }}backendtf-prod${{ endif }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       
-      - name: Define Backend Configuration
+      - name: Copy Backend Configuration - Dev
+        if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
         run: |
           cd terraform_new
-          echo 'backend "s3" { bucket = "${S3_BUCKET_NAME}" }' > backend.tf
+          cp backend-dev.tf backend.tf
+
+      - name: Copy Backend Configuration - Prod
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          cd terraform_new
+          cp backend_prod.tf backend.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
