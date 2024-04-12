@@ -30,7 +30,7 @@ jobs:
         run: |
           cd terraform_new
           terraform init
-          terraform plan -var-file=dev.tfvars -reconfigure -backend-config=settings/dev/backend.conf
+          terraform plan -var-file=dev.tfvars -reconfigure -backend-config=backend.conf
 
       - name: Terraform Apply - Dev
         if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
