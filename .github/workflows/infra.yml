@@ -25,13 +25,18 @@ jobs:
       - name: Terraform Init and Plan
         if: github.ref == 'refs/heads/infra' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
         run: |
+          cd terraform_new
           terraform init
           terraform plan -var-file=dev.tfvars
 
       - name: Terraform Apply - Dev
         if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
-        run: terraform apply -var-file=dev.tfvars -auto-approve
+        run: |
+          cd terraform_new
+          terraform apply -var-file=dev.tfvars -auto-approve
 
       - name: Terraform Apply - Prod
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -var-file=prod.tfvars -auto-approve
+        run: |
+          cd terraform_new
+          terraform apply -var-file=prod.tfvars -auto-approve
