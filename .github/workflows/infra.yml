@@ -29,8 +29,8 @@ jobs:
         if: github.ref == 'refs/heads/infra' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
         run: |
           cd terraform_new
-          terraform init
-          terraform plan -var-file=dev.tfvars  -reconfigure -backend-config=backend-dev.conf
+          terraform init -reconfigure -backend-config=backend-dev.conf
+          terraform plan -var-file=dev.tfvars 
 
       - name: Terraform Apply - Dev
         if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
