@@ -22,7 +22,7 @@ jobs:
 
       - name: Terraform Init
         if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-        run: terraform init
+        run: cd terraform_new && terraform init
 
       - name: Terraform Plan
         if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
