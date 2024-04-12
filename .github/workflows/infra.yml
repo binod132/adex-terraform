@@ -27,6 +27,7 @@ jobs:
       - name: destroy
         run: | 
           cd terraform_new
+          terraform init
           terraform destroy -var-file=dev.tfvars -auto-approve
       - name: Terraform Init and Plan
         if: github.ref == 'refs/heads/infra' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
