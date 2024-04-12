@@ -1,0 +1,45 @@
+name: Terraform Deployment
+
+on:
+  push:
+    branches:
+      - infra
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: latest
+          cli_config_credentials_hostname: app.terraform.io
+          terraform_wrapper: true
+
+      - name: Terraform Init and Plan
+        if: github.ref == 'refs/heads/infra' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
+        run: |
+          cd terraform_new
+          terraform init -reconfigure -backend-config=backend-dev.conf
+          terraform plan -var-file=dev.tfvars 
+
+      - name: Terraform Apply - Dev
+        if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
+        run: |
+          cd terraform_new
+          terraform apply -var-file=dev.tfvars -auto-approve
+
+      - name: Terraform Apply - Prod
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          cd terraform_new
+          terraform apply -var-file=prod.tfvars -auto-approve
