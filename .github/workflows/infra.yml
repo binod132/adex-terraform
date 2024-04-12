@@ -18,22 +18,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       
-      - name: Select backend config
-        run: |
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/infra" ]; then
-            cp backend-dev.tf backend.tf
-          elif [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            cp backend-prod.tf backend.tf
-          else
-            echo "Unknown environment, skipping backend configuration."
-            exit 1
-          fi
-      # - name: Copy Backend Configuration - Prod
-      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      #   run: |
-      #     cd terraform_new
-      #     cp backend_prod.tf backend.tf
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -46,7 +30,7 @@ jobs:
         run: |
           cd terraform_new
           terraform init
-          terraform plan -var-file=dev.tfvars
+          terraform plan -var-file=dev.tfvars -reconfigure -backend-config=settings/dev/backend.conf
 
       - name: Terraform Apply - Dev
         if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
