@@ -22,6 +22,7 @@ jobs:
         if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
         run: |
           cd terraform_new
+          rm -f backend.tf
           cp backend-dev.tf backend.tf
 
       - name: Copy Backend Configuration - Prod
