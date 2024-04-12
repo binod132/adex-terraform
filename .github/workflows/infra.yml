@@ -1,14 +1,37 @@
-name: CICD
+name: Terraform Deployment
 
 on:
   push:
     branches:
-      - infra
-    
-jobs:
-  build-and-deploy:
-    runs-on: [ ubuntu-latest ]
-    steps:
+      - dev
+  pull_request:
+    branches:
+      - main
 
-      - name: Checkout source
-        uses: actions/checkout@v3
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: latest
+
+      - name: Terraform Init
+        if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        run: terraform init
+
+      - name: Terraform Plan
+        if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        run: terraform plan -var-file=dev.tfvars
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        run: terraform apply -var-file=dev.tfvars
+
+      - name: Terraform Apply on Main
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -var-file=prod.tfvars
