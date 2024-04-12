@@ -73,8 +73,7 @@ Security measures implemented include:
 - Security groups to control inbound and outbound traffic.
 - TLS encryption enabled on ALB for secure communication.
 
-10. Monitoring and Logging
+10. Monitoring and Logging (Pending)
 Monitoring and logging are crucial for maintaining application health and diagnosing issues. Implemented monitoring includes:
-
-CloudWatch alarms for resource utilization and health checks.
-Integration with CloudWatch Logs for centralized logging.
+- Impletement Grafana and Prometheus 
+- Use Cloudwatch and Event Bridge for monitoring and Alert system.
