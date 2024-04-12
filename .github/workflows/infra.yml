@@ -29,6 +29,10 @@ jobs:
         run: |
           cd terraform_new
           cp backend_prod.tf backend.tf
+      - name: cat backend.tf
+        run: |
+            cd terraform_new
+            cat backend.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
