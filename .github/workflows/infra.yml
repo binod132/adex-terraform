@@ -19,19 +19,19 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: latest
+          cli_config_credentials_hostname: app.terraform.io
+          terraform_wrapper: true
 
-      - name: Terraform Init
-        if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-        run: cd terraform_new && terraform init
+      - name: Terraform Init and Plan
+        if: github.ref == 'refs/heads/infra' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
+        run: |
+          terraform init
+          terraform plan -var-file=dev.tfvars
 
-      - name: Terraform Plan
-        if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-        run: terraform plan -var-file=dev.tfvars
+      - name: Terraform Apply - Dev
+        if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
+        run: terraform apply -var-file=dev.tfvars -auto-approve
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-        run: terraform apply -var-file=dev.tfvars
-
-      - name: Terraform Apply on Main
+      - name: Terraform Apply - Prod
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -var-file=prod.tfvars
+        run: terraform apply -var-file=prod.tfvars -auto-approve
