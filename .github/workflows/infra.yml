@@ -20,8 +20,7 @@ jobs:
       
       - name: Select backend config
         run: |
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/infra" ]; then
-            cp backend-dev.tf backend.tf
+          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/infra" ]; then cp backend-dev.tf backend.tf
 
       # - name: Copy Backend Configuration - Prod
       #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
