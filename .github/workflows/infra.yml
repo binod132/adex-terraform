@@ -18,11 +18,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       
-      - name: Copy Backend Configuration - Dev
-        if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
+      - name: Select backend config
         run: |
-          cd terraform_new
-          cp backend-dev.tf backend.tf
+          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/infra" ]; then
+            cp backend-dev.tf backend.tf
 
       # - name: Copy Backend Configuration - Prod
       #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
