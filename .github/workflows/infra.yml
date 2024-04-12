@@ -20,8 +20,14 @@ jobs:
       
       - name: Select backend config
         run: |
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/infra" ]; then cp backend-dev.tf backend.tf
-
+          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/infra" ]; then
+            cp backend-dev.tf backend.tf
+          elif [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            cp backend-prod.tf backend.tf
+          else
+            echo "Unknown environment, skipping backend configuration."
+            exit 1
+          fi
       # - name: Copy Backend Configuration - Prod
       #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       #   run: |
