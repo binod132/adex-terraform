@@ -3,6 +3,8 @@ Access Application
 for Dev: adex-dev-188381659.us-east-1.elb.amazonaws.com
 for Prod: adex-task-alb-prod-627012683.us-east-1.elb.amazonaws.com
 
+(Note: please refer branch name infra for dev)
+
 1. Introduction
 This documentation provides a detailed overview of the deployment process for the Todo Node.js application using modern DevOps practices. The deployment utilizes Docker containers orchestrated with AWS ECS Fargate, managed through Terraform, and automated with GitActions. The application is deployed in both development and production environments on AWS.
 
