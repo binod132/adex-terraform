@@ -18,13 +18,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       
-      - name: Copy Backend Configuration
+      - name: Copy Backend Configuration - Dev
+        if: github.ref == 'refs/heads/infra' && github.event_name == 'push'
         run: |
-          if [[ ${{ github.ref }} == 'refs/heads/infra' ]]; then
-            cp terraform_new/backend_dev.tf terraform_new/backend.tf
-          else
-            cp terraform_new/backend_prod.tf terraform_new/backend.tf
-          fi
+          cd terraform_new
+          cp backend-dev.tf backend.tf
+
+      - name: Copy Backend Configuration - Prod
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          cd terraform_new
+          cp backend_prod.tf backend.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
