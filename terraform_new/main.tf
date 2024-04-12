@@ -4,11 +4,13 @@ provider "aws" {
 
 resource "aws_ecs_cluster" "my_cluster" {
   #name = "my-ecs-cluster"
+  
   name = var.ecs_name
 }
 
 resource "aws_ecr_repository" "my_ecr_repository" {
   #name = "my-ecr-repo"
+  count = length(data.aws_ecr_repository.existing_ecr) == 0 ? 1 : 0
   name = var.ecr_name
 }
 
