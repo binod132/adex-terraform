@@ -24,11 +24,11 @@ jobs:
           cd terraform_new
           cp backend-dev.tf backend.tf
 
-      - name: Copy Backend Configuration - Prod
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          cd terraform_new
-          cp backend_prod.tf backend.tf
+      # - name: Copy Backend Configuration - Prod
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: |
+      #     cd terraform_new
+      #     cp backend_prod.tf backend.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
